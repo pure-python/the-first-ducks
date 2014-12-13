@@ -41,6 +41,19 @@
             </small></b>
         </a>
         at <b><small>{{ post.date_added }}</small></b>
+
+        <br>
+
+        <button type="submit">Edit</button>
+
+        <a href="{% url 'delete_post' post.pk %}">
+            <input type="button" id="rmv" value='Delete' onclick="return ideaDelete(this.rmv)">
+        </a>
+        <script type="text/javascript">
+            function ideaDelete() {
+                return confirm ("Delete?");
+            }
+        </script>
       </div>
     </div>
   {% endfor %}
