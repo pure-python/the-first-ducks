@@ -6,18 +6,47 @@ from django.templatetags.static import static
 from django.conf import settings
 
 
-class UserPost(models.Model):
-    text = models.TextField(max_length=200)
+class Group(models.Model):
+    name = models.TextField(max_length=200)
     date_added = models.DateTimeField(auto_now_add=True)
+    creator = models.ForeignKey(User, related_name='creator')
 
-    author = models.ForeignKey(User, related_name='posts')
-    likers = models.ManyToManyField(User, related_name='liked_posts')
+    members = models.ManyToManyField(User, related_name='group_members')
 
     def __unicode__(self):
         return '{} @ {}'.format(self.author, self.date_added)
 
     class Meta:
         ordering = ['-date_added']
+
+
+class PostBase(models.Model):
+    class Meta:
+        abstract = True
+    text = models.TextField(max_length=200)
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    author = models.ForeignKey(User, related_name='posts')
+    likers = models.ManyToManyField(User, related_name='liked_posts')
+    usertype = models.TextField(max_length=10)
+    group_post = models.ForeignKey(Group, related_name='group_posts', null=True)
+    dislikers = models.ManyToManyField(User, related_name='disliked_posts')
+
+
+    def __unicode__(self):
+        return '{} @ {}'.format(self.author, self.date_added)
+
+    class Meta:
+        ordering = ['-date_added']
+
+
+class UserPost(PostBase):
+    pass
+
+
+class GroupPost(PostBase):
+    pass
+
 
 
 class UserPostComment(models.Model):
@@ -46,6 +75,8 @@ class UserProfile(models.Model):
 
     user = models.OneToOneField(User, related_name='profile')
 
+    friends = models.ForeignKey(User, related_name='friends', null=True)
+
     @property
     def avatar_url(self):
         return self.avatar.url if self.avatar \
@@ -65,3 +96,4 @@ def callback(sender, instance, *args, **kwargs):
     if not hasattr(instance, 'profile'):
         instance.profile = UserProfile()
         instance.profile.save()
+

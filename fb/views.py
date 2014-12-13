@@ -7,22 +7,26 @@ from django.http import HttpResponseForbidden
 from datetime import datetime,timedelta
 from django.contrib.auth.models import User
 
-from fb.models import UserPost, UserPostComment, UserProfile, UserMessage
+
+
+from fb.models import UserPost, UserMessage, UserPostComment, UserProfile, GroupPost, Group, PostBase
 from fb.forms import (
-    UserPostForm, UserPostCommentForm, UserLogin, UserProfileForm
+    UserPostForm, UserPostCommentForm, UserLogin, UserProfileForm, GroupUserPostForm, GroupsForm,
+origin/master
 )
 
 
 @login_required
 def index(request):
-    posts = UserPost.objects.all()
+    posts = PostBase.objects.all()
     if request.method == 'GET':
         form = UserPostForm()
     elif request.method == 'POST':
         form = UserPostForm(request.POST)
         if form.is_valid():
             text = form.cleaned_data['text']
-            post = UserPost(text=text, author=request.user)
+            post = UserPost(text=text, author=request.user, usertype='user_post')
+            post.group_post = None;
             post.save()
 
     context = {
@@ -30,6 +34,42 @@ def index(request):
         'form': form,
     }
     return render(request, 'index.html', context)
+
+@login_required
+def delete_post(request, pk):
+    UserPost.objects.get(pk=pk).delete()
+    return redirect('/')
+
+@login_required
+def create_new_group(request):
+    groups = Group.objects.all()
+    # user = request.user
+    # groups = user.group_members
+
+    if request.method == 'GET':
+        form = GroupsForm()
+    elif request.method == 'POST':
+        form = GroupsForm(request.POST)
+        if form.is_valid():
+
+            name = form.cleaned_data['text']
+
+            group_exists = False
+
+            for group in groups:
+                if group.name == name:
+                    group_exists = True
+                    break
+
+            if group_exists == False:
+                group = Group(name=name, creator=request.user)
+                group.save()
+
+    context = {
+        'groups': groups,
+        'form': form,
+    }
+    return render(request, 'groups.html', context)
 
 
 @login_required
@@ -137,7 +177,15 @@ def edit_profile_view(request, user):
 @login_required
 def like_view(request, pk):
     post = UserPost.objects.get(pk=pk)
-    post.likers.add(request.user)
+
+    #if not post.likers.get(pk=request.user.pk):
+    if not request.user in post.likers.all():
+        post.likers.add(request.user)
+        if request.user in post.dislikers.all():
+            post.dislikers.remove(request.user)
+    else:
+        post.likers.remove(request.user)
+
     post.save()
     return redirect(reverse('post_details', args=[post.pk]))
 
@@ -186,3 +234,88 @@ def message_person(request):
     }
     
     return render(request, 'message.html', context)
+
+def dislike_view(request, pk):
+    post = UserPost.objects.get(pk=pk)
+
+    if not request.user in post.dislikers.all():
+        post.dislikers.add(request.user)
+        if request.user in post.likers.all():
+            post.likers.remove(request.user)
+    else:
+        post.dislikers.remove(request.user)
+
+    post.save()
+    return redirect(reverse('post_details', args=[post.pk]))
+
+@login_required
+def group_view(request, pk):
+    group = Group.objects.get(pk=pk)
+    posts = group.group_posts.all()
+
+    if request.method == 'GET':
+        form = GroupUserPostForm()
+    elif request.method == 'POST':
+        form = GroupUserPostForm(request.POST)
+        if form.is_valid():
+            text = form.cleaned_data['text']
+            post = GroupPost(text=text, author=request.user, usertype='group_post')
+            post.group_post = group
+            post.save()
+
+    context = {
+        'group_posts': posts,
+        'group': group,
+        'form': form,
+    }
+    return render(request, 'group.html', context)
+
+
+@login_required
+def friend_view(request, pk):
+    userr = UserProfile.objects.get(pk=pk)
+    users = UserProfile.objects.all()
+    pending = []
+
+    # for user in request.user.friends.all():
+    #     for x in user.user.friends.all():
+    #         if x.user == request.user:
+    #             pending.append(user.user);
+    for user in request.user.friends.all():
+        for x in user.user.friends.all():
+            if x.user == request.user:
+                pending.append(user.user);
+
+
+    context = {
+        'users': users,
+        'current_user': request.user,
+        'friends': request.user.friends.all(),
+        'pending': pending,
+        'non_friends': [x for x in users if x not in request.user.friends.all() and x != userr],
+    }
+    return render(request, 'friends.html', context)
+
+
+@login_required
+def friend_request_view(request, pk):
+
+    user = UserProfile.objects.get(pk=pk)
+    if(user != request.user.profile):
+        request.user.friends.add(user)
+    request.user.save()
+
+    return redirect('/')
+
+@login_required
+def friend_request_view_auto(request, pk):
+
+    user = UserProfile.objects.get(pk=pk)
+    if(user != request.user.profile):
+        request.user.friends.add(user)
+    UserProfile.objects.get(pk=pk).friends.add(request.user)
+    UserProfile.objects.get(pk=pk).save()
+    request.user.save()
+
+    return redirect('/')
+

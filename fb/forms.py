@@ -27,3 +27,13 @@ class UserProfileForm(Form):
     gender = ChoiceField(choices=UserProfile.GENDERS, required=False)
     date_of_birth = DateField(required=False)
     avatar = ImageField(required=False)
+
+
+class GroupsForm(Form):
+    text = CharField(widget=Textarea(
+        attrs={'rows': 1, 'cols': 40, 'class': 'form-control','placeholder': "The name of the group"}))
+
+class GroupUserPostForm(Form):
+    text = CharField(widget=Textarea(
+        attrs={'rows': 1, 'cols': 40, 'class': 'form-control','placeholder': "What's on your mind? Share with the rest of the group"}))
+

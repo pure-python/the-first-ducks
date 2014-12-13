@@ -1,5 +1,3 @@
-1) Alexandru Buicescu
-
 purepython-project
 ==================
 
