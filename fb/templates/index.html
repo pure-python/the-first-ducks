@@ -25,11 +25,6 @@
         <img src="{{ post.author.profile.avatar_url }}">
       </a>
       <div class="media-body">
-        <h4 class="media-heading">
-          <a href="{% url 'post_details' post.pk %}">
-          {{ post.text}}
-          </a>
-        </h4>
         <a href="{% url 'profile' post.author.username %}">
             <b><small>
                 {% if post.author.first_name or post.author.last_name %}
@@ -54,6 +49,19 @@
                 return confirm ("Delete?");
             }
         </script>
+
+        {% if post.usertype == 'group_post' %}
+            posted in:
+            <a href="{% url 'group_page' post.group_post.pk %}">
+              {{ post.group_post.name }}
+            </a>
+        {% endif %}
+        <h4 class="media-heading">
+          <a href="{% url 'post_details' post.pk %}">
+          {{ post.text}}
+          </a>
+        </h4>
+
       </div>
     </div>
   {% endfor %}

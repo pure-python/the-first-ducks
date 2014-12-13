@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponseForbidden
 
-from fb.models import UserPost, UserPostComment, UserProfile, GroupPost, Group
+from fb.models import UserPost, UserPostComment, UserProfile, GroupPost, Group, PostBase
 from fb.forms import (
     UserPostForm, UserPostCommentForm, UserLogin, UserProfileForm, GroupUserPostForm, GroupsForm,
 )
@@ -13,14 +13,15 @@ from fb.forms import (
 
 @login_required
 def index(request):
-    posts = UserPost.objects.all()
+    posts = PostBase.objects.all()
     if request.method == 'GET':
         form = UserPostForm()
     elif request.method == 'POST':
         form = UserPostForm(request.POST)
         if form.is_valid():
             text = form.cleaned_data['text']
-            post = UserPost(text=text, author=request.user)
+            post = UserPost(text=text, author=request.user, usertype='user_post')
+            post.group_post = None;
             post.save()
 
     context = {
@@ -37,6 +38,9 @@ def delete_post(request, pk):
 @login_required
 def create_new_group(request):
     groups = Group.objects.all()
+    # user = request.user
+    # groups = user.group_members
+
     if request.method == 'GET':
         form = GroupsForm()
     elif request.method == 'POST':
@@ -205,12 +209,50 @@ def group_view(request, pk):
         form = GroupUserPostForm(request.POST)
         if form.is_valid():
             text = form.cleaned_data['text']
-            post = GroupPost(text=text, author=request.user)
+            post = GroupPost(text=text, author=request.user, usertype='group_post')
             post.group_post = group
             post.save()
 
     context = {
         'group_posts': posts,
+        'group': group,
         'form': form,
     }
     return render(request, 'group.html', context)
+
+
+@login_required
+def friend_view(request, pk):
+    user = UserProfile.objects.get(pk=pk)
+    users = UserProfile.objects.all()
+
+    context = {
+        'users': users,
+        'current_user': request.user,
+        'friends': request.user.friends.all(),
+        'non_friends': [x for x in users if x not in request.user.friends.all() and x != user],
+    }
+    return render(request, 'friends.html', context)
+
+
+@login_required
+def friend_request_view(request, pk):
+
+    user = UserProfile.objects.get(pk=pk)
+    if(user != request.user.profile):
+        request.user.friends.add(user)
+    request.user.save()
+
+    return redirect('/')
+
+@login_required
+def friend_request_view_auto(request, pk):
+
+    user = UserProfile.objects.get(pk=pk)
+    if(user != request.user.profile):
+        request.user.friends.add(user)
+    UserProfile.objects.get(pk=pk).friends.add(request.user)
+    UserProfile.objects.get(pk=pk).save()
+    request.user.save()
+
+    return redirect('/')

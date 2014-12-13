@@ -36,3 +36,4 @@ class GroupsForm(Form):
 class GroupUserPostForm(Form):
     text = CharField(widget=Textarea(
         attrs={'rows': 1, 'cols': 40, 'class': 'form-control','placeholder': "What's on your mind? Share with the rest of the group"}))
+
