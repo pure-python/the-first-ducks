@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from fb.views import (
-message_person
+message_person,
 
     index,
     post_details,
