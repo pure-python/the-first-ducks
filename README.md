@@ -1,9 +1,9 @@
+1) Alexandru Buicescu
+
 purepython-project
 ==================
 
 Course Project for http://purepython.eaudeweb.ro
-
-1) Alexandru Buicescu
 
 
 System prerequisites
