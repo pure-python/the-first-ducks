@@ -1,6 +1,11 @@
 purepython-project
 ==================
 
+Team 1 - The first ducks
+------------------------
+
+Mentor: @mihaibivol
+
 Course Project for http://purepython.eaudeweb.ro
 
 System prerequisites
