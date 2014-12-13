@@ -4,9 +4,19 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from fb.views import (
-    index, post_details, login_view, logout_view, profile_view,
-    edit_profile_view, like_view, group_view, create_new_group, friend_view, friend_request_view,
+    index,
+    post_details,
+    login_view,
+    logout_view,
+    profile_view,
+    edit_profile_view,
+    like_view,
+    group_view,
+    create_new_group,
+    friend_view,
+    friend_request_view,
     friend_request_view_auto,
+    dislike_view,
 )
 
 
@@ -22,6 +32,7 @@ urlpatterns = patterns(
     url(r'^friendrequestauto/(?P<pk>\d)/$', friend_request_view_auto, name='friend_page_request_auto'),
     url(r'^groups/$', create_new_group, name='all_groups'),
     url(r'^post/(?P<pk>\d)/like$', like_view, name='like'),
+    url(r'^post/(?P<pk>\d)/dislike$', dislike_view, name='dislike'),
     url(r'^accounts/login/$', login_view, name='login'),
     url(r'^accounts/logout/$', logout_view, name='logout'),
     url(r'^profile/(?P<user>\w+)/$', profile_view, name='profile'),

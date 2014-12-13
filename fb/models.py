@@ -30,6 +30,8 @@ class PostBase(models.Model):
     likers = models.ManyToManyField(User, related_name='liked_posts')
     usertype = models.TextField(max_length=10)
     group_post = models.ForeignKey(Group, related_name='group_posts', null=True)
+    dislikers = models.ManyToManyField(User, related_name='disliked_posts')
+
 
     def __unicode__(self):
         return '{} @ {}'.format(self.author, self.date_added)

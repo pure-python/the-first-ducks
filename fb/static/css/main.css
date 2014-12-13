@@ -59,15 +59,11 @@ body {
 /* :before si :after sunt pseudo-clase ele adauga 
    continut in html.
    Vom adauga o iconita pe toate butoanele .btn-like  */
-.btn-like:after {
-	content: ''; /* obligatoriu macar string gol */
-	display: inline-block;
-	width: 1.4em; /* relativ la font-size */
-	height: 1.4em;
-	margin-right: -.5em;
-	background: url('../img/icon-cane.svg') no-repeat;
-	background-size: contain;
-	vertical-align: middle;
+.btn-like {
+    margin-bottom: 5px;
+}
+
+.btn-dislike {
 }
 
 /* demo counter */
