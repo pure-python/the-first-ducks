@@ -3,6 +3,12 @@
 purepython-project
 ==================
 
+Team 1 - The first ducks
+------------------------
+
+Mentor: @mihaibivol
+Members: Stefan Niculae
+
 Course Project for http://purepython.eaudeweb.ro
 
 
