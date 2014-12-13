@@ -25,14 +25,20 @@
         <img src="{{ post.author.profile.avatar_url }}">
       </a>
       <div class="media-body">
+        <a href="{% url 'profile' post.author.username %}">
+            <b><small>{{ post.author.username }}</small></b></a>
+        on <b><small>{{ post.date_added }}</small></b>
+        {% if post.usertype == 'group_post' %}
+            in group:
+            <a href="{% url 'group_page' post.group_post.pk %}">
+              {{ post.group_post.name }}
+            </a>
+        {% endif %}
         <h4 class="media-heading">
           <a href="{% url 'post_details' post.pk %}">
           {{ post.text}}
           </a>
         </h4>
-        <a href="{% url 'profile' post.author.username %}">
-            <b><small>{{ post.author.username }}</small></b></a>
-        on <b><small>{{ post.date_added }}</small></b>
       </div>
     </div>
   {% endfor %}

@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponseForbidden
 
-from fb.models import UserPost, UserPostComment, UserProfile, GroupPost, Group
+from fb.models import UserPost, UserPostComment, UserProfile, GroupPost, Group, PostBase
 from fb.forms import (
     UserPostForm, UserPostCommentForm, UserLogin, UserProfileForm, GroupUserPostForm, GroupsForm,
 )
@@ -13,14 +13,15 @@ from fb.forms import (
 
 @login_required
 def index(request):
-    posts = UserPost.objects.all()
+    posts = PostBase.objects.all()
     if request.method == 'GET':
         form = UserPostForm()
     elif request.method == 'POST':
         form = UserPostForm(request.POST)
         if form.is_valid():
             text = form.cleaned_data['text']
-            post = UserPost(text=text, author=request.user)
+            post = UserPost(text=text, author=request.user, usertype='user_post')
+            post.group_post = None;
             post.save()
 
     context = {
@@ -33,6 +34,9 @@ def index(request):
 @login_required
 def create_new_group(request):
     groups = Group.objects.all()
+    # user = request.user
+    # groups = user.group_members
+
     if request.method == 'GET':
         form = GroupsForm()
     elif request.method == 'POST':
@@ -179,12 +183,13 @@ def group_view(request, pk):
         form = GroupUserPostForm(request.POST)
         if form.is_valid():
             text = form.cleaned_data['text']
-            post = GroupPost(text=text, author=request.user)
+            post = GroupPost(text=text, author=request.user, usertype='group_post')
             post.group_post = group
             post.save()
 
     context = {
         'group_posts': posts,
+        'group': group,
         'form': form,
     }
     return render(request, 'group.html', context)
