@@ -53,8 +53,26 @@ class UserProfile(models.Model):
             else static(settings.AVATAR_DEFAULT)
 
 
+class Group(models.Model):
+    name = models.TextField(max_length=200)
+    date_added = models.DateTimeField(auto_now_add=True)
+    creator = models.ForeignKey(User, related_name='creator')
+
+    members = models.ManyToManyField(User, related_name='group_members')
+
+    def __unicode__(self):
+        return '{} @ {}'.format(self.author, self.date_added)
+
+    class Meta:
+        ordering = ['-date_added']
+
+class GroupPost(UserPost):
+    group_post = models.ForeignKey(Group, related_name='group_posts')
+
+
 @receiver(post_save, sender=User)
 def callback(sender, instance, *args, **kwargs):
     if not hasattr(instance, 'profile'):
         instance.profile = UserProfile()
         instance.profile.save()
+
