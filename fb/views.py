@@ -30,6 +30,10 @@ def index(request):
     }
     return render(request, 'index.html', context)
 
+@login_required
+def delete_post(request, pk):
+    UserPost.objects.get(pk=pk).delete()
+    return redirect('/')
 
 @login_required
 def create_new_group(request):

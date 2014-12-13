@@ -36,6 +36,21 @@
             </small></b>
         </a>
         at <b><small>{{ post.date_added }}</small></b>
+
+        <br>
+        {% if user == post.author %}
+            <button type="submit">Edit</button>
+
+            <a href="{% url 'delete_post' post.pk %}">
+                <input type="button" id="rmv" value='Delete' onclick="return ideaDelete(this.rmv)">
+            </a>
+            <script type="text/javascript">
+                function ideaDelete() {
+                    return confirm ("Delete?");
+                }
+            </script>
+        {% endif %}
+
         {% if post.usertype == 'group_post' %}
             posted in:
             <a href="{% url 'group_page' post.group_post.pk %}">
@@ -47,6 +62,7 @@
           {{ post.text}}
           </a>
         </h4>
+
       </div>
     </div>
   {% endfor %}

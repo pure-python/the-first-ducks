@@ -17,6 +17,7 @@ from fb.views import (
     friend_request_view,
     friend_request_view_auto,
     dislike_view,
+    delete_post,
 )
 
 
@@ -39,4 +40,7 @@ urlpatterns = patterns(
     url(r'^profile/(?P<user>\w+)/edit$', edit_profile_view,
         name='edit_profile'),
     url(r'^admin/', include(admin.site.urls)),
+
+    url(r'^post/(?P<pk>\d)/delete$', delete_post, name='delete_post'),
+
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
