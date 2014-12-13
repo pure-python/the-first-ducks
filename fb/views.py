@@ -224,7 +224,7 @@ def friend_view(request, pk):
 
     context = {
         'users': users,
-        'user': user,
+        'current_user': request.user,
         'friends': request.user.friends.all(),
         'non_friends': [x for x in users if x not in request.user.friends.all() and x != user],
     }

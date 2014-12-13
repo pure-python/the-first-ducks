@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-  <h1>News feed for group {{group.name}}</h1>
+  <h1>My friends</h1>
 
   <div class="posts">
   {% for user in friends %}
@@ -15,6 +15,14 @@
           {{ user.user.username }}
           </a>
         </h4>
+          {% if user in current_user.friends.all %}
+            <div>
+              Pending
+            {% if current_user in user.user.friends.all %}
+              He has me
+            {% endif%}
+            </div>
+          {% endif %}
       </div>
     </div>
   {% endfor %}
@@ -36,6 +44,13 @@
           <a href="{% url 'friend_page_request_auto' user.user.pk %}">
             Auto friend
           </a>
+        {% if user.user.friends.all %}
+          {% for x in user.user.friends.all %}
+            {% if x.user == current_user %}
+              Wants to add you
+            {% endif %}
+          {% endfor %}
+        {% endif %}
     </div>
   {% endfor %}
   </div>

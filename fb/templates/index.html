@@ -37,7 +37,7 @@
         </a>
         at <b><small>{{ post.date_added }}</small></b>
         {% if post.usertype == 'group_post' %}
-            in group:
+            posted in:
             <a href="{% url 'group_page' post.group_post.pk %}">
               {{ post.group_post.name }}
             </a>
