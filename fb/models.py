@@ -52,6 +52,14 @@ class UserProfile(models.Model):
             else static(settings.AVATAR_DEFAULT)
 
 
+class UserMessage(models.Model):
+    text = models.TextField(max_length=200)
+    date_added = models.DateTimeField(auto_now_add=True)
+    viewed=models.BooleanField(default=False)
+    sender = models.ForeignKey(User,related_name='sender1')
+    receiver = models.ForeignKey(User,related_name='retiever2')
+    
+
 @receiver(post_save, sender=User)
 def callback(sender, instance, *args, **kwargs):
     if not hasattr(instance, 'profile'):

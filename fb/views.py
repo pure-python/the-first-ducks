@@ -4,10 +4,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponseForbidden
+from datetime import datetime,timedelta
+from django.contrib.auth.models import User
 
-from fb.models import UserPost, UserPostComment, UserProfile
+from fb.models import UserPost, UserPostComment, UserProfile, UserMessage
 from fb.forms import (
-    UserPostForm, UserPostCommentForm, UserLogin, UserProfileForm,
+    UserPostForm, UserPostCommentForm, UserLogin, UserProfileForm
 )
 
 
@@ -138,3 +140,49 @@ def like_view(request, pk):
     post.likers.add(request.user)
     post.save()
     return redirect(reverse('post_details', args=[post.pk]))
+
+@login_required
+def message_person(request):
+    
+    messages_sent = []
+    messages_received = []
+    messages=[]
+
+    to=request.user.username
+    copy=request.user.username
+    if request.method == 'POST':
+        form = (request.POST)
+        to = form['to']
+        message = form['message']
+        try:
+            user_target=User.objects.get(username=to)
+        except User.DoesNotExist:
+            to="Undefined User"
+
+        if to!="Undefined User":
+            post = UserMessage(text=message, sender=request.user,
+                           receiver=user_target)
+            post.save()
+
+    if to!="Undefined User":
+        copy="Messages with " + to
+        
+        messages_sent_db = UserMessage.objects.filter(
+            sender__username=request.user.username, receiver__username=to)
+        
+        messages_received_db = UserMessage.objects.filter(
+            receiver__username=request.user.username, sender__username=to)
+
+        messages_sent = [m for m in messages_sent_db]
+        messages_received = [m for m in messages_received_db]
+        
+        messages=sorted(messages_sent+messages_received,key=lambda s: s.date_added.replace(tzinfo=None))
+    
+    
+    context = {
+        'messages': messages,
+        'message_target':copy,
+        'to':to
+    }
+    
+    return render(request, 'message.html', context)

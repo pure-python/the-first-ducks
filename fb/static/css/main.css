@@ -99,3 +99,36 @@ body {
 	max-width: 100%; /* 100% din primul parinte cu width (.media-left) */
 	height: auto; /* scalat proportional */
 }
+
+.messagereceived{
+	color:green;
+        width: 70%;
+}
+
+.messagesent{
+	color:blue;
+        width: 70%;
+}
+
+#message{
+	padding-top:3cm;
+	margin-left: auto;
+        margin-right: auto;
+        width: 70%;
+}
+
+#messages{
+	margin-left: auto;
+        margin-right: auto;
+        width: 70%;
+	border-style: solid;
+    	border-width: 5px;
+}
+
+#sender_receiver{
+	padding-top:2cm;
+	margin-left: auto;
+        margin-right: auto;
+        width: 70%;
+	color:red;
+}
