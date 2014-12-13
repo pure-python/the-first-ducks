@@ -31,9 +31,15 @@ class UserProfileForm(Form):
 
 class GroupsForm(Form):
     text = CharField(widget=Textarea(
-        attrs={'rows': 1, 'cols': 40, 'class': 'form-control','placeholder': "The name of the group"}))
+        attrs={'rows': 1, 'cols': 40, 'class': 'form-control', 'placeholder': "The name of the group"}))
+
 
 class GroupUserPostForm(Form):
     text = CharField(widget=Textarea(
-        attrs={'rows': 1, 'cols': 40, 'class': 'form-control','placeholder': "What's on your mind? Share with the rest of the group"}))
+        attrs={'rows': 1, 'cols': 40, 'class': 'form-control', 'placeholder': "What's on your mind? Share with the rest of the group"}))
+
+
+class EditPostForm(Form):
+    text = CharField(widget=Textarea(
+        attrs={'rows': 1, 'cols': 40, 'class': 'form-control', 'placeholder': "TO BE REPLACED WITH TEXT THAT WAS BEFORE"}))
 

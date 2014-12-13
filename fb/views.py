@@ -7,7 +7,7 @@ from django.http import HttpResponseForbidden
 
 from fb.models import UserPost, UserPostComment, UserProfile, GroupPost, Group, PostBase
 from fb.forms import (
-    UserPostForm, UserPostCommentForm, UserLogin, UserProfileForm, GroupUserPostForm, GroupsForm,
+    UserPostForm, UserPostCommentForm, UserLogin, UserProfileForm, GroupUserPostForm, GroupsForm, EditPostForm
 )
 
 
@@ -256,3 +256,32 @@ def friend_request_view_auto(request, pk):
     request.user.save()
 
     return redirect('/')
+
+
+@login_required
+def edit_post_view(request, pk):
+
+    post = UserPost.objects.get(pk=pk)
+    form = EditPostForm(initial={
+        'text': post.text}
+    )
+
+    if request.method == 'GET':
+
+        post.save()
+
+        context = {
+            'form': form,
+        }
+
+        return render(request, 'edit_post.html', context)
+
+    else:
+        form = EditPostForm(request.POST)
+        if form.is_valid():
+            text = form.cleaned_data['text']
+            #post = UserPost(text=text, author=request.user, usertype='user_post')
+            post.text = text
+            post.group_post = None;
+            post.save()
+        return redirect('/')
