@@ -1,3 +1,5 @@
+1) Alexandru Buicescu
+
 purepython-project
 ==================
 
@@ -6,9 +8,14 @@ Team 1 - The first ducks
 
 Mentor: @mihaibivol
 
-Kantor Iulian
 
+
+Members: Stefan Niculae
+	 Elisabeta Vulpe
+	 Kantor Iulian
+	 
 Course Project for http://purepython.eaudeweb.ro
+
 
 System prerequisites
 --------------------
@@ -47,6 +54,3 @@ Project installation
   ```
   ./manage.py runserver
   ```
-
-Names:
-    Stefan Niculae
