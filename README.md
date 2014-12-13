@@ -40,3 +40,6 @@ Project installation
   ```
   ./manage.py runserver
   ```
+
+Names:
+    Stefan Niculae
