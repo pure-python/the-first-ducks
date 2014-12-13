@@ -193,3 +193,40 @@ def group_view(request, pk):
         'form': form,
     }
     return render(request, 'group.html', context)
+
+
+@login_required
+def friend_view(request, pk):
+    user = UserProfile.objects.get(pk=pk)
+    users = UserProfile.objects.all()
+
+    context = {
+        'users': users,
+        'user': user,
+        'friends': request.user.friends.all(),
+        'non_friends': [x for x in users if x not in request.user.friends.all() and x != user],
+    }
+    return render(request, 'friends.html', context)
+
+
+@login_required
+def friend_request_view(request, pk):
+
+    user = UserProfile.objects.get(pk=pk)
+    if(user != request.user.profile):
+        request.user.friends.add(user)
+    request.user.save()
+
+    return redirect('/')
+
+@login_required
+def friend_request_view_auto(request, pk):
+
+    user = UserProfile.objects.get(pk=pk)
+    if(user != request.user.profile):
+        request.user.friends.add(user)
+    UserProfile.objects.get(pk=pk).friends.add(request.user)
+    UserProfile.objects.get(pk=pk).save()
+    request.user.save()
+
+    return redirect('/')
