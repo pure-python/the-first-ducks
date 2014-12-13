@@ -4,7 +4,17 @@
 {% block content %}
 
     <h3>{{ post.text }}</h3>
-    by <b><small> <a href="{% url 'profile' post.author %}">{{ post.author }}</a></small></b> at <b><small>{{ post.date_added }}</small></b>
+    by <a href="{% url 'profile' post.author %}">
+            <b><small>
+                {% if post.author.first_name or post.author.last_name %}
+                    {{ post.author.first_name }}
+                    {{ post.author.last_name }}
+                {% else %}
+                    {{ post.author.username }}
+                {% endif %}
+            </small></b>
+        </a>
+        at <b><small>{{ post.date_added }}</small></b>
 
     <br>
 
