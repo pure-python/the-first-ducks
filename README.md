@@ -1,3 +1,5 @@
+1) Alexandru Buicescu
+
 purepython-project
 ==================
 
@@ -8,6 +10,7 @@ Mentor: @mihaibivol
 Members: Stefan Niculae
 	 Elisabeta Vulpe
 Course Project for http://purepython.eaudeweb.ro
+
 
 System prerequisites
 --------------------
