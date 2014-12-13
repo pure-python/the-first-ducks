@@ -15,14 +15,25 @@
           {{ user.user.username }}
           </a>
         </h4>
-          {% if user in current_user.friends.all %}
+          {% if user in current_user.friends.all and user.user not in pending %}
             <div>
               Pending
+            </div>
+          {% endif %}
+          {% for x in pending %}
+            {{x}} {{current_user}}
+          {% endfor %}
+
+        {% if user.user.friends.all %}
+          {% for x in user.user.friends.all %}
+            {% if x.user == current_user %}
+              Wants to add you
+            {% endif %}
+          {% endfor %}
+        {% endif %}
             {% if current_user in user.user.friends.all %}
               He has me
             {% endif%}
-            </div>
-          {% endif %}
       </div>
     </div>
   {% endfor %}

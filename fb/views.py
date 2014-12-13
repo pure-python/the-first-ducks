@@ -219,14 +219,26 @@ def group_view(request, pk):
 
 @login_required
 def friend_view(request, pk):
-    user = UserProfile.objects.get(pk=pk)
+    userr = UserProfile.objects.get(pk=pk)
     users = UserProfile.objects.all()
+    pending = []
+
+    # for user in request.user.friends.all():
+    #     for x in user.user.friends.all():
+    #         if x.user == request.user:
+    #             pending.append(user.user);
+    for user in request.user.friends.all():
+        for x in user.user.friends.all():
+            if x.user == request.user:
+                pending.append(user.user);
+
 
     context = {
         'users': users,
         'current_user': request.user,
         'friends': request.user.friends.all(),
-        'non_friends': [x for x in users if x not in request.user.friends.all() and x != user],
+        'pending': pending,
+        'non_friends': [x for x in users if x not in request.user.friends.all() and x != userr],
     }
     return render(request, 'friends.html', context)
 
