@@ -5,9 +5,9 @@ from django.contrib.auth.decorators import login_required
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponseForbidden
 
-from fb.models import UserPost, UserPostComment, UserProfile
+from fb.models import UserPost, UserPostComment, UserProfile, GroupPost, Group
 from fb.forms import (
-    UserPostForm, UserPostCommentForm, UserLogin, UserProfileForm,
+    UserPostForm, UserPostCommentForm, UserLogin, UserProfileForm, GroupUserPostForm, GroupsForm,
 )
 
 
@@ -28,6 +28,35 @@ def index(request):
         'form': form,
     }
     return render(request, 'index.html', context)
+
+
+@login_required
+def create_new_group(request):
+    groups = Group.objects.all()
+    if request.method == 'GET':
+        form = GroupsForm()
+    elif request.method == 'POST':
+        form = GroupsForm(request.POST)
+        if form.is_valid():
+
+            name = form.cleaned_data['text']
+
+            group_exists = False
+
+            for group in groups:
+                if group.name == name:
+                    group_exists = True
+                    break
+
+            if group_exists == False:
+                group = Group(name=name, creator=request.user)
+                group.save()
+
+    context = {
+        'groups': groups,
+        'form': form,
+    }
+    return render(request, 'groups.html', context)
 
 
 @login_required
@@ -138,3 +167,24 @@ def like_view(request, pk):
     post.likers.add(request.user)
     post.save()
     return redirect(reverse('post_details', args=[post.pk]))
+
+@login_required
+def group_view(request, pk):
+    group = Group.objects.get(pk=pk)
+    posts = group.group_posts.all()
+
+    if request.method == 'GET':
+        form = GroupUserPostForm()
+    elif request.method == 'POST':
+        form = GroupUserPostForm(request.POST)
+        if form.is_valid():
+            text = form.cleaned_data['text']
+            post = GroupPost(text=text, author=request.user)
+            post.group_post = group
+            post.save()
+
+    context = {
+        'group_posts': posts,
+        'form': form,
+    }
+    return render(request, 'group.html', context)
