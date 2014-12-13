@@ -6,6 +6,8 @@ Team 1 - The first ducks
 
 Mentor: @mihaibivol
 
+Kantor Iulian
+
 Course Project for http://purepython.eaudeweb.ro
 
 System prerequisites
