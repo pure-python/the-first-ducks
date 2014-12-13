@@ -135,6 +135,28 @@ def edit_profile_view(request, user):
 @login_required
 def like_view(request, pk):
     post = UserPost.objects.get(pk=pk)
-    post.likers.add(request.user)
+
+    #if not post.likers.get(pk=request.user.pk):
+    if not request.user in post.likers.all():
+        post.likers.add(request.user)
+        if request.user in post.dislikers.all():
+            post.dislikers.remove(request.user)
+    else:
+        post.likers.remove(request.user)
+
+    post.save()
+    return redirect(reverse('post_details', args=[post.pk]))
+
+@login_required
+def dislike_view(request, pk):
+    post = UserPost.objects.get(pk=pk)
+
+    if not request.user in post.dislikers.all():
+        post.dislikers.add(request.user)
+        if request.user in post.likers.all():
+            post.likers.remove(request.user)
+    else:
+        post.dislikers.remove(request.user)
+
     post.save()
     return redirect(reverse('post_details', args=[post.pk]))
