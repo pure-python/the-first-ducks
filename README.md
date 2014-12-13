@@ -5,6 +5,7 @@ Team 1 - The first ducks
 ------------------------
 
 Mentor: @mihaibivol
+Members: Stefan Niculae
 
 Course Project for http://purepython.eaudeweb.ro
 
@@ -45,6 +46,3 @@ Project installation
   ```
   ./manage.py runserver
   ```
-
-Names:
-    Stefan Niculae
