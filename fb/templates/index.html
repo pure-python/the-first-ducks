@@ -31,8 +31,16 @@
           </a>
         </h4>
         <a href="{% url 'profile' post.author.username %}">
-            <b><small>{{ post.author.username }}</small></b></a>
-        on <b><small>{{ post.date_added }}</small></b>
+            <b><small>
+                {% if post.author.first_name or post.author.last_name %}
+                    {{ post.author.first_name }}
+                    {{ post.author.last_name }}
+                {% else %}
+                    {{ post.author.username }}
+                {% endif %}
+            </small></b>
+        </a>
+        at <b><small>{{ post.date_added }}</small></b>
       </div>
     </div>
   {% endfor %}
